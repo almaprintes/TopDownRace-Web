@@ -37,3 +37,12 @@
 .rankingTable tr[data-rank="1"] td:nth-child(2),.rankingTable tr[data-rank="2"] td:nth-child(2),.rankingTable tr[data-rank="3"] td:nth-child(2){text-shadow:0 2px 8px #000,0 0 14px #000}
 .rankingTable tr[data-rank="1"] td:last-child,.rankingTable tr[data-rank="2"] td:last-child,.rankingTable tr[data-rank="3"] td:last-child{text-shadow:0 2px 9px #000}
 @media(max-width:520px){.rankingTable .podiumCar{left:50%;width:140px;height:140px;transform:translate(-12%,-50%) rotate(90deg)}.rankingTable tr[data-rank="1"] .podiumCar{left:47%;width:205px;height:205px;transform:translate(-10%,-50%) rotate(90deg)}.rankingTable tr[data-rank="2"] .podiumCar{width:150px;height:150px}.rankingTable tr[data-rank="3"] .podiumCar{width:142px;height:142px}}
+
+/* Keep podium artwork inside each individual leaderboard stripe */
+.rankingTable tr[data-rank="1"] td:nth-child(2),.rankingTable tr[data-rank="2"] td:nth-child(2),.rankingTable tr[data-rank="3"] td:nth-child(2){position:relative}
+.podiumCarArt{position:absolute;z-index:-1;top:0;bottom:0;left:0;right:-115px;overflow:hidden;pointer-events:none}
+.rankingTable .podiumCarArt .podiumCar{position:absolute;display:block;max-width:none;margin:0;left:auto;right:4px;top:50%;width:152px;height:152px;object-fit:contain;transform:translateY(-50%) rotate(90deg);opacity:.58}
+.rankingTable tr[data-rank="1"] .podiumCarArt .podiumCar{right:-12px;width:225px;height:225px;transform:translateY(-50%) rotate(90deg);opacity:.84}
+.rankingTable tr[data-rank="2"] .podiumCarArt .podiumCar{right:10px;width:160px;height:160px;opacity:.57}
+.rankingTable tr[data-rank="3"] .podiumCarArt .podiumCar{right:16px;width:150px;height:150px;opacity:.52}
+@media(max-width:520px){.podiumCarArt{right:-105px}.rankingTable tr[data-rank="1"] .podiumCarArt .podiumCar{right:-24px;width:205px;height:205px}.rankingTable tr[data-rank="2"] .podiumCarArt .podiumCar{right:2px;width:148px;height:148px}.rankingTable tr[data-rank="3"] .podiumCarArt .podiumCar{right:8px;width:140px;height:140px}}
