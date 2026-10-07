@@ -1,6 +1,21 @@
 {
   "version": 1,
   "started_at": "2026-10-07T09:35:36.252952+00:00",
-  "days": [],
-  "measurement": "Awaiting first scheduled exporter. Initial snapshot seeded from an administrative query; no HTTP export measured yet."
+  "days": [
+    {
+      "date": "2026-10-07",
+      "requests": 1,
+      "successes": 1,
+      "failures": 0,
+      "response_body_bytes": 1182
+    }
+  ],
+  "measurement": "Response body bytes read by the scheduled exporter; excludes HTTP overhead, other clients and other Supabase services. Not a billing total.",
+  "last_attempt_at": "2026-10-07T09:42:20.672Z",
+  "last_success_at": "2026-10-07T09:42:20.672Z",
+  "last_snapshot_at": "2026-10-07T09:40:00.305Z",
+  "last_response_body_bytes": 1182,
+  "last_snapshot_bytes": 1047,
+  "projected_30_day_response_body_bytes": 10212480,
+  "last_error": null
 }
