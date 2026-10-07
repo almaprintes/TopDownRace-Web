@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "started_at": "2026-10-07T09:35:36.252952+00:00",
+  "days": [],
+  "measurement": "Awaiting first scheduled exporter. Initial snapshot seeded from an administrative query; no HTTP export measured yet."
+}
