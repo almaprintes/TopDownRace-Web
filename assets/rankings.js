@@ -20,7 +20,7 @@ function render(){
  select.replaceChildren(...snapshot.tracks.map(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=names[x.id]||x.id;return o;}));
  if(snapshot.tracks.some(x=>x.id===selected))select.value=selected;
  const entries=snapshot.tracks.find(x=>x.id===select.value)?.entries||[];
- body.replaceChildren(...entries.map(e=>{const r=document.createElement('tr');r.dataset.rank=e.rank;[String(e.rank).padStart(2,'0'),e.nick,fmt(e.best_time_ms)].forEach(v=>{const c=document.createElement('td');c.textContent=v;r.append(c)});if(e.rank<=3&&/^[a-z0-9_]+$/.test(e.car_id||'')){const art=document.createElement('span');art.className='podiumCarArt';art.setAttribute('aria-hidden','true');const img=document.createElement('img');img.className='podiumCar';img.src=CAR_ASSET+e.car_id+'.webp';img.alt='';img.loading='lazy';img.decoding='async';art.append(img);r.append(art);}return r;}));
+ body.replaceChildren(...entries.map(e=>{const r=document.createElement('tr');r.dataset.rank=e.rank;[String(e.rank).padStart(2,'0'),e.nick,fmt(e.best_time_ms)].forEach(v=>{const c=document.createElement('td');c.textContent=v;r.append(c)});return r;}));
  table.hidden=!entries.length;empty.hidden=!!entries.length;empty.textContent=t.empty;select.disabled=false;
  const g=new Date(snapshot.generated_at),stale=Date.now()-g.getTime()>STALE_MS;status.dataset.state=stale?'stale':'ready';
  status.textContent=`${stale?t.stale:t.updated} ${new Intl.DateTimeFormat(lang(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}).format(g)}`;

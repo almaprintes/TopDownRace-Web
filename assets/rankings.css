@@ -21,20 +21,6 @@
 
 .creatorBadge{display:inline-flex;vertical-align:middle;align-items:center;margin-left:5px;padding:3px 7px;border:1px solid #4edfff55;border-radius:999px;background:#4edfff12;color:var(--cyan);font-size:.55rem;font-weight:900;letter-spacing:.08em;white-space:nowrap;box-shadow:0 0 12px #4edfff12}
 
-/* Podium artwork — row watermark */
-.rankingTable tr[data-rank="1"],.rankingTable tr[data-rank="2"],.rankingTable tr[data-rank="3"]{position:relative;isolation:isolate;overflow:hidden}
-.rankingTable tr[data-rank="1"]{background:linear-gradient(90deg,#06333f 0%,#0b2028 46%,#091015 100%)}
-.rankingTable tr[data-rank="2"]{background:linear-gradient(90deg,#11181d 0%,#0d151a 58%,#090d10 100%)}
-.rankingTable tr[data-rank="3"]{background:linear-gradient(90deg,#211b10 0%,#15130f 54%,#090d10 100%)}
-.rankingTable tr[data-rank="1"] td,.rankingTable tr[data-rank="2"] td,.rankingTable tr[data-rank="3"] td{position:relative;z-index:3;background:transparent;text-shadow:0 2px 8px #000,0 0 12px #000}
-.podiumCarArt{position:absolute;z-index:1;inset:0;overflow:hidden;pointer-events:none}
-.podiumCarArt:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,9,12,.92) 0%,rgba(5,9,12,.22) 40%,rgba(5,9,12,.12) 64%,rgba(5,9,12,.9) 90%,rgba(5,9,12,.98) 100%)}
-.podiumCar{position:absolute!important;display:block!important;max-width:none!important;margin:0!important;top:50%!important;left:52%!important;object-fit:contain!important;filter:drop-shadow(0 10px 16px #000d) saturate(1.25)!important}
-.rankingTable tr[data-rank="1"] .podiumCar{width:235px!important;height:235px!important;transform:translate(-25%,-50%) rotate(90deg)!important;opacity:.9!important}
-.rankingTable tr[data-rank="2"] .podiumCar{width:175px!important;height:175px!important;transform:translate(-10%,-50%) rotate(90deg)!important;opacity:.66!important}
-.rankingTable tr[data-rank="3"] .podiumCar{width:165px!important;height:165px!important;transform:translate(-6%,-50%) rotate(90deg)!important;opacity:.6!important}
-@media(max-width:520px){.podiumCarArt:after{background:linear-gradient(90deg,rgba(5,9,12,.94) 0%,rgba(5,9,12,.28) 36%,rgba(5,9,12,.16) 62%,rgba(5,9,12,.94) 86%,rgba(5,9,12,.99) 100%)}.podiumCar{left:49%!important}.rankingTable tr[data-rank="1"] .podiumCar{width:220px!important;height:220px!important;transform:translate(-22%,-50%) rotate(90deg)!important}.rankingTable tr[data-rank="2"] .podiumCar{width:165px!important;height:165px!important}.rankingTable tr[data-rank="3"] .podiumCar{width:155px!important;height:155px!important}}
-
 /* Podium medal hierarchy */
 .rankingTable tr[data-rank="1"]{background:linear-gradient(90deg,rgba(116,82,12,.34) 0%,rgba(46,35,13,.28) 48%,#091015 100%)}
 .rankingTable tr[data-rank="2"]{background:linear-gradient(90deg,rgba(130,143,153,.20) 0%,rgba(41,48,53,.20) 52%,#090d10 100%)}
