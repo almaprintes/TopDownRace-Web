@@ -1,0 +1,1 @@
+Original, unmodified lobby WebP assets from almaprintes/TopdownCraftrace, commit 12e90c0c496af0cb618f851529b6ad2d3887ac5b, public/assets/cars/lobby/. Served locally so the records podium does not depend on a mutable branch or third-party image requests. Filenames match snapshot car_id values.
