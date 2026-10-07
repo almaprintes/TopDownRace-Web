@@ -21,6 +21,8 @@ function renderRow(entry){
  const cell=(className,text)=>{const node=document.createElement('span');node.className=className;node.setAttribute('role','cell');node.textContent=text;return node;};
  const position=cell('rankingPosition',String(entry.rank).padStart(2,'0'));
  const nick=cell('rankingNick',entry.nick);
+ // Prefer a readable suffix break over leaving a single final letter on its own.
+ if(entry.nick.includes('_'))nick.replaceChildren(...entry.nick.split(/(?=_)/).flatMap((part,index)=>index?[document.createElement('wbr'),part]:[part]));
  const car=cell('rankingCarArt','');
  const time=cell('rankingTime',fmt(entry.best_time_ms));
  if(entry.rank>=1&&entry.rank<=3&&typeof entry.car_id==='string'&&/^[a-z0-9_]{1,64}$/.test(entry.car_id)){
