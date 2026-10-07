@@ -34,3 +34,12 @@
 .rankingTable tr[data-rank="2"] .podiumCar{width:175px!important;height:175px!important;transform:translate(-10%,-50%) rotate(90deg)!important;opacity:.66!important}
 .rankingTable tr[data-rank="3"] .podiumCar{width:165px!important;height:165px!important;transform:translate(-6%,-50%) rotate(90deg)!important;opacity:.6!important}
 @media(max-width:520px){.podiumCarArt:after{background:linear-gradient(90deg,rgba(5,9,12,.94) 0%,rgba(5,9,12,.28) 36%,rgba(5,9,12,.16) 62%,rgba(5,9,12,.94) 86%,rgba(5,9,12,.99) 100%)}.podiumCar{left:49%!important}.rankingTable tr[data-rank="1"] .podiumCar{width:220px!important;height:220px!important;transform:translate(-22%,-50%) rotate(90deg)!important}.rankingTable tr[data-rank="2"] .podiumCar{width:165px!important;height:165px!important}.rankingTable tr[data-rank="3"] .podiumCar{width:155px!important;height:155px!important}}
+
+/* Podium medal hierarchy */
+.rankingTable tr[data-rank="1"]{background:linear-gradient(90deg,rgba(116,82,12,.34) 0%,rgba(46,35,13,.28) 48%,#091015 100%)}
+.rankingTable tr[data-rank="2"]{background:linear-gradient(90deg,rgba(130,143,153,.20) 0%,rgba(41,48,53,.20) 52%,#090d10 100%)}
+.rankingTable tr[data-rank="3"]{background:linear-gradient(90deg,rgba(142,78,35,.26) 0%,rgba(56,33,19,.22) 52%,#090d10 100%)}
+.rankingTable tr[data-rank="1"] td:first-child,.rankingTable tr[data-rank="1"] td:first-child:after{color:#f4c84a;text-shadow:0 0 14px #f4c84a55}
+.rankingTable tr[data-rank="2"] td:first-child{color:#c7d0d7;text-shadow:0 0 12px #dbe6ed33}
+.rankingTable tr[data-rank="3"] td:first-child{color:#d58a4d;text-shadow:0 0 12px #d58a4d44}
+.rankingTable tr[data-rank="1"] td:last-child{color:#f4c84a}
