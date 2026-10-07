@@ -1,0 +1,53 @@
+name: Rankings checks and refresh
+on:
+  push:
+    branches: [main]
+    paths: ['index.html', 'assets/rankings.*', 'scripts/**', 'tests/**', 'ops/**', '.github/workflows/rankings.yml']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '2-57/5 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: rankings-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: node --check assets/rankings.js
+      - run: node --test tests/*.test.mjs
+  refresh:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: rankings-data
+          path: ranking-cache
+      - name: Download one shared snapshot
+        id: sync
+        continue-on-error: true
+        run: node scripts/sync-rankings.mjs ranking-cache
+      - name: Publish snapshot and usage counters
+        working-directory: ranking-cache
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add leaderboards.json usage.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: refresh public rankings and usage counters"
+            git push origin HEAD:rankings-data
+          fi
+      - name: Report refresh failure
+        if: steps.sync.outcome == 'failure'
+        run: exit 1

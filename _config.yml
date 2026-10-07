@@ -1,0 +1,5 @@
+exclude:
+  - ops
+  - scripts
+  - tests
+  - README.md
