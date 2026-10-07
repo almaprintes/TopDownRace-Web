@@ -20,3 +20,6 @@
 @media(max-width:650px){.commentsHead{gap:12px}.commentsLive{padding:6px 8px}.commentForm{grid-template-columns:1fr}.commentForm label:nth-child(2),.commentActions,.commentHint{grid-column:1;grid-row:auto}.trackComments{max-height:360px}}
 
 .creatorBadge{display:inline-flex;vertical-align:middle;align-items:center;margin-left:5px;padding:3px 7px;border:1px solid #4edfff55;border-radius:999px;background:#4edfff12;color:var(--cyan);font-size:.55rem;font-weight:900;letter-spacing:.08em;white-space:nowrap;box-shadow:0 0 12px #4edfff12}
+
+.rankingTable td:nth-child(2){position:relative}.podiumCar{display:block;width:74px;height:40px;object-fit:contain;object-position:left center;margin-top:5px;filter:drop-shadow(0 5px 8px #0009);transform:translateX(-3px)}.rankingTable tr[data-rank="1"] .podiumCar{width:98px;height:52px;margin-top:3px;filter:drop-shadow(0 7px 12px #000b) saturate(1.16)}.rankingTable tr[data-rank="1"] td{background:linear-gradient(90deg,#41dcff08,transparent 75%)}.rankingTable tr[data-rank="2"] .podiumCar,.rankingTable tr[data-rank="3"] .podiumCar{opacity:.86}
+@media(max-width:520px){.podiumCar{width:64px;height:34px}.rankingTable tr[data-rank="1"] .podiumCar{width:84px;height:44px}.rankingTable td{padding-top:13px;padding-bottom:13px}}
