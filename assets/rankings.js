@@ -5,7 +5,7 @@ const BASE='https://juukbnkjboiazqggqcyv.supabase.co/rest/v1';
 const KEY='sb_publishable_l5cHUHrGHoFzGqmUyfQKSA_d3VjWksB';
 const HEAD={'apikey':KEY,'Content-Type':'application/json'};
 const REFRESH_MS=300000, STALE_MS=20*60000;
-const CAR_ASSET='https://raw.githubusercontent.com/almaprintes/TopdownCraftrace/dev-first-update/public/assets/cars/lobby/';
+const CAR_ASSET='/assets/cars/';
 const select=document.getElementById('rankingTrack'),body=document.getElementById('rankingRows'),status=document.getElementById('rankingStatus'),empty=document.getElementById('rankingEmpty'),table=document.getElementById('rankingTable');
 const comments=document.getElementById('trackComments'),form=document.getElementById('commentForm'),commentStatus=document.getElementById('commentStatus');
 const names={'circuito-atlantico':'Circuito Atlántico','karting-canarias':'Karting Canarias','karting-tenerife':'Karting Tenerife','santa-cruz':'Santa Cruz'};
@@ -14,13 +14,34 @@ let snapshot=null,loading=false,visible=false,lastAttempt=0;
 const lang=()=>msg[document.documentElement.lang]?document.documentElement.lang:'es';
 const fmt=ms=>`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`;
 function valid(d){return d?.version===1&&Array.isArray(d.tracks)&&Number.isFinite(Date.parse(d.generated_at));}
+// Each car has a dedicated, clipped grid cell. Never insert artwork into a <tr>.
+function renderRow(entry){
+ const row=document.createElement('div');
+ row.className='rankingRow';row.dataset.rank=entry.rank;row.setAttribute('role','row');
+ const cell=(className,text)=>{const node=document.createElement('span');node.className=className;node.setAttribute('role','cell');node.textContent=text;return node;};
+ const position=cell('rankingPosition',String(entry.rank).padStart(2,'0'));
+ const nick=cell('rankingNick',entry.nick);
+ // Prefer a readable suffix break over leaving a single final letter on its own.
+ if(entry.nick.includes('_'))nick.replaceChildren(...entry.nick.split(/(?=_)/).flatMap((part,index)=>index?[document.createElement('wbr'),part]:[part]));
+ const car=cell('rankingCarArt','');
+ const time=cell('rankingTime',fmt(entry.best_time_ms));
+ if(entry.rank>=1&&entry.rank<=3&&typeof entry.car_id==='string'&&/^[a-z0-9_]{1,64}$/.test(entry.car_id)){
+  const img=document.createElement('img');
+  img.className='rankingCar';img.src=CAR_ASSET+entry.car_id+'.webp';
+  img.alt=entry.car_id.replaceAll('_',' ').toUpperCase();img.decoding='async';
+  img.addEventListener('error',()=>{img.hidden=true;});
+  car.append(img);
+ }
+ row.append(position,nick,car,time);
+ return row;
+}
 function render(){
  const t=msg[lang()]; if(!snapshot){status.textContent=t.loading;return;}
  const selected=select.value;
  select.replaceChildren(...snapshot.tracks.map(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=names[x.id]||x.id;return o;}));
  if(snapshot.tracks.some(x=>x.id===selected))select.value=selected;
  const entries=snapshot.tracks.find(x=>x.id===select.value)?.entries||[];
- body.replaceChildren(...entries.map(e=>{const r=document.createElement('tr');r.dataset.rank=e.rank;[String(e.rank).padStart(2,'0'),e.nick,fmt(e.best_time_ms)].forEach(v=>{const c=document.createElement('td');c.textContent=v;r.append(c)});return r;}));
+ body.replaceChildren(...entries.map(renderRow));
  table.hidden=!entries.length;empty.hidden=!!entries.length;empty.textContent=t.empty;select.disabled=false;
  const g=new Date(snapshot.generated_at),stale=Date.now()-g.getTime()>STALE_MS;status.dataset.state=stale?'stale':'ready';
  status.textContent=`${stale?t.stale:t.updated} ${new Intl.DateTimeFormat(lang(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}).format(g)}`;

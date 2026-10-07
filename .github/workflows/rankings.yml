@@ -2,7 +2,7 @@ name: Rankings checks and refresh
 on:
   push:
     branches: [main]
-    paths: ['index.html', 'assets/rankings.*', 'scripts/**', 'tests/**', 'ops/**', '.github/workflows/rankings.yml']
+    paths: ['index.html', 'assets/rankings.*', 'assets/cars/**', 'package*.json', 'scripts/**', 'tests/**', 'ops/**', '.github/workflows/rankings.yml']
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -21,6 +21,22 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - run: node --check assets/rankings.js
       - run: node --test tests/*.test.mjs
+  browser:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: |
+          python3 -m http.server 8765 &
+          node tests/rankings-browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: records-mobile-previews
+          path: test-results/
   refresh:
     if: github.event_name != 'pull_request'
     needs: validate
