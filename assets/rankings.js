@@ -1,91 +1,48 @@
 (() => {
-  'use strict';
-  const root = document.getElementById('records');
-  if (!root) return;
-  // Visitors only read GitHub's shared static copy. Never query Supabase here.
-  const URL = 'https://raw.githubusercontent.com/almaprintes/TopDownRace-Web/rankings-data/leaderboards.json';
-  const REFRESH_MS = 300000;
-  const STALE_MS = 20 * 60000;
-  const select = document.getElementById('rankingTrack');
-  const body = document.getElementById('rankingRows');
-  const status = document.getElementById('rankingStatus');
-  const empty = document.getElementById('rankingEmpty');
-  const table = document.getElementById('rankingTable');
-  const names = {'circuito-atlantico':'Circuito Atlántico','karting-canarias':'Karting Canarias','karting-tenerife':'Karting Tenerife','santa-cruz':'Santa Cruz'};
-  const messages = {
-    es: {loading:'Cargando los tiempos…',updated:'Actualizado',stale:'La actualización se está retrasando. Últimos datos:',error:'No se han podido cargar los tiempos. Lo intentaremos de nuevo.',offline:'No se ha podido comprobar la actualización. Últimos datos:',empty:'Todavía no hay tiempos publicados en este circuito. ¿Estrenas tú la clasificación?'},
-    en: {loading:'Loading lap times…',updated:'Updated',stale:'The update is delayed. Latest data:',error:'Lap times could not be loaded. We will try again.',offline:'Could not check for updates. Latest data:',empty:'No published times on this track yet. Will you be the first?'},
-    it: {loading:'Caricamento dei tempi…',updated:'Aggiornato',stale:'Aggiornamento in ritardo. Ultimi dati:',error:'Impossibile caricare i tempi. Riproveremo.',offline:'Impossibile verificare gli aggiornamenti. Ultimi dati:',empty:'Nessun tempo pubblicato su questo circuito. Sarai il primo?'}
-  };
-  let snapshot = null, loading = false, failed = false, lastAttempt = 0, visible = false;
-  const lang = () => messages[document.documentElement.lang] ? document.documentElement.lang : 'es';
-  function formatTime(ms) {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Math.floor(ms / 1000) % 60;
-    return `${minutes}:${String(seconds).padStart(2,'0')}.${String(ms % 1000).padStart(3,'0')}`;
-  }
-  function render() {
-    const text = messages[lang()];
-    if (!snapshot) {
-      status.textContent = text[failed ? 'error' : 'loading'];
-      status.dataset.state = failed ? 'error' : 'loading';
-      return;
-    }
-    const selected = select.value;
-    select.replaceChildren(...snapshot.tracks.map(track => {
-      const option = document.createElement('option');
-      option.value = track.id;
-      option.textContent = names[track.id] || track.id.replaceAll('-',' ');
-      return option;
-    }));
-    if (snapshot.tracks.some(track => track.id === selected)) select.value = selected;
-    const track = snapshot.tracks.find(item => item.id === select.value);
-    const entries = track?.entries || [];
-    body.replaceChildren(...entries.map(entry => {
-      const row = document.createElement('tr');
-      row.dataset.rank = String(entry.rank);
-      for (const value of [String(entry.rank).padStart(2,'0'),entry.nick,formatTime(entry.best_time_ms)]) {
-        const cell = document.createElement('td');
-        cell.textContent = value; // Player names are untrusted text, never HTML.
-        row.append(cell);
-      }
-      return row;
-    }));
-    table.hidden = !entries.length;
-    empty.hidden = !!entries.length;
-    empty.textContent = text.empty;
-    select.disabled = snapshot.tracks.length === 0;
-    const generated = new Date(snapshot.generated_at);
-    const stale = Date.now() - generated.getTime() > STALE_MS;
-    status.dataset.state = stale || failed ? 'stale' : 'ready';
-    const prefix = stale ? text.stale : failed ? text.offline : text.updated;
-    status.textContent = `${prefix} ${new Intl.DateTimeFormat(lang(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}).format(generated)}`;
-  }
-  function valid(data) {
-    return data?.version === 1 && Number.isFinite(Date.parse(data.generated_at)) && Date.parse(data.generated_at) <= Date.now()+60000 &&
-      Array.isArray(data.tracks) && data.tracks.length <= 100 && data.tracks.every(track =>
-        typeof track.id === 'string' && Array.isArray(track.entries) && track.entries.length <= 10 &&
-        track.entries.every(entry => typeof entry.nick === 'string' && Number.isSafeInteger(entry.rank) && entry.rank >= 1 && entry.rank <= 10 && Number.isSafeInteger(entry.best_time_ms) && entry.best_time_ms > 0));
-  }
-  async function refresh() {
-    if (loading || document.hidden || !visible || Date.now()-lastAttempt < REFRESH_MS) return;
-    loading = true; lastAttempt = Date.now();
-    try {
-      const response = await fetch(URL,{credentials:'omit',signal:AbortSignal.timeout(10000)});
-      if (!response.ok) throw new Error('Snapshot unavailable');
-      const data = await response.json();
-      if (!valid(data)) throw new Error('Invalid snapshot');
-      if (!snapshot || Date.parse(data.generated_at) >= Date.parse(snapshot.generated_at)) snapshot = data;
-      failed = false;
-    } catch { failed = true; }
-    finally { loading = false; render(); }
-  }
-  select.addEventListener('change',render);
-  document.getElementById('lang')?.addEventListener('change',render);
-  document.addEventListener('visibilitychange',() => {if (!document.hidden) {render(); refresh();}});
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(entries => {visible = entries.some(entry => entry.isIntersecting); if (visible) refresh();},{rootMargin:'200px'}).observe(root);
-  } else { visible = true; refresh(); }
-  setInterval(() => {if (visible && !document.hidden) {render(); refresh();}},REFRESH_MS);
-  render();
+'use strict';
+const root=document.getElementById('records'); if(!root)return;
+const BASE='https://juukbnkjboiazqggqcyv.supabase.co/rest/v1';
+const KEY='sb_publishable_l5cHUHrGHoFzGqmUyfQKSA_d3VjWksB';
+const HEAD={'apikey':KEY,'Content-Type':'application/json'};
+const REFRESH_MS=300000, STALE_MS=20*60000;
+const select=document.getElementById('rankingTrack'),body=document.getElementById('rankingRows'),status=document.getElementById('rankingStatus'),empty=document.getElementById('rankingEmpty'),table=document.getElementById('rankingTable');
+const comments=document.getElementById('trackComments'),form=document.getElementById('commentForm'),commentStatus=document.getElementById('commentStatus');
+const names={'circuito-atlantico':'Circuito Atlántico','karting-canarias':'Karting Canarias','karting-tenerife':'Karting Tenerife','santa-cruz':'Santa Cruz'};
+const msg={es:{loading:'Cargando los tiempos…',updated:'Actualizado',stale:'La actualización se está retrasando. Últimos datos:',error:'No se han podido cargar los tiempos.',empty:'Todavía no hay tiempos publicados en este circuito.',noComments:'Aún no hay comentarios. Sé el primero.',sent:'Comentario publicado.',sending:'Publicando…',commentError:'No se pudo publicar. Inténtalo de nuevo.',rate:'Espera un minuto antes de publicar otro comentario.'},en:{loading:'Loading lap times…',updated:'Updated',stale:'Update delayed. Latest data:',error:'Lap times could not be loaded.',empty:'No published times on this track yet.',noComments:'No comments yet. Be the first.',sent:'Comment posted.',sending:'Posting…',commentError:'Could not post. Try again.',rate:'Wait one minute before posting another comment.'},it:{loading:'Caricamento dei tempi…',updated:'Aggiornato',stale:'Aggiornamento in ritardo. Ultimi dati:',error:'Impossibile caricare i tempi.',empty:'Nessun tempo pubblicato su questo circuito.',noComments:'Ancora nessun commento. Scrivi il primo.',sent:'Commento pubblicato.',sending:'Pubblicazione…',commentError:'Impossibile pubblicare. Riprova.',rate:'Attendi un minuto prima di pubblicare un altro commento.'}};
+let snapshot=null,loading=false,visible=false,lastAttempt=0;
+const lang=()=>msg[document.documentElement.lang]?document.documentElement.lang:'es';
+const fmt=ms=>`${Math.floor(ms/60000)}:${String(Math.floor(ms/1000)%60).padStart(2,'0')}.${String(ms%1000).padStart(3,'0')}`;
+function valid(d){return d?.version===1&&Array.isArray(d.tracks)&&Number.isFinite(Date.parse(d.generated_at));}
+function render(){
+ const t=msg[lang()]; if(!snapshot){status.textContent=t.loading;return;}
+ const selected=select.value;
+ select.replaceChildren(...snapshot.tracks.map(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=names[x.id]||x.id;return o;}));
+ if(snapshot.tracks.some(x=>x.id===selected))select.value=selected;
+ const entries=snapshot.tracks.find(x=>x.id===select.value)?.entries||[];
+ body.replaceChildren(...entries.map(e=>{const r=document.createElement('tr');r.dataset.rank=e.rank;[String(e.rank).padStart(2,'0'),e.nick,fmt(e.best_time_ms)].forEach(v=>{const c=document.createElement('td');c.textContent=v;r.append(c)});return r;}));
+ table.hidden=!entries.length;empty.hidden=!!entries.length;empty.textContent=t.empty;select.disabled=false;
+ const g=new Date(snapshot.generated_at),stale=Date.now()-g.getTime()>STALE_MS;status.dataset.state=stale?'stale':'ready';
+ status.textContent=`${stale?t.stale:t.updated} ${new Intl.DateTimeFormat(lang(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}).format(g)}`;
+}
+async function refresh(force=false){
+ if(loading||document.hidden||(!visible&&!force)||(!force&&Date.now()-lastAttempt<REFRESH_MS))return;
+ loading=true;lastAttempt=Date.now();
+ try{const r=await fetch(BASE+'/web_leaderboard_snapshot?select=payload&id=eq.true',{headers:HEAD,cache:'no-store',signal:AbortSignal.timeout(10000)});if(!r.ok)throw 0;const rows=await r.json();const d=rows[0]?.payload;if(!valid(d))throw 0;snapshot=d;render();await loadComments();}
+ catch{status.dataset.state='error';status.textContent=msg[lang()].error;} finally{loading=false;}
+}
+async function loadComments(){
+ if(!comments||!select.value)return;
+ try{const q=encodeURIComponent(select.value);const r=await fetch(BASE+`/web_track_comments?select=id,display_name,message,created_at&track_id=eq.${q}&order=created_at.desc&limit=30`,{headers:HEAD,cache:'no-store'});if(!r.ok)throw 0;const rows=await r.json();
+ comments.replaceChildren(...(rows.length?rows.map(x=>{const a=document.createElement('article');a.className='trackComment';const h=document.createElement('div');h.className='commentMeta';const n=document.createElement('strong');n.textContent=x.display_name;const d=document.createElement('time');d.dateTime=x.created_at;d.textContent=new Intl.DateTimeFormat(lang(),{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(x.created_at));h.append(n,d);const p=document.createElement('p');p.textContent=x.message;a.append(h,p);return a;}):[Object.assign(document.createElement('p'),{className:'commentEmpty',textContent:msg[lang()].noComments})]));}
+ catch{comments.replaceChildren();}
+}
+function token(){let t=localStorage.getItem('tdr:web:comment-token');if(!t){t=crypto.randomUUID();localStorage.setItem('tdr:web:comment-token',t)}return t;}
+form?.addEventListener('submit',async e=>{e.preventDefault();const fd=new FormData(form),button=form.querySelector('button');button.disabled=true;commentStatus.textContent=msg[lang()].sending;
+ try{const r=await fetch(BASE+'/rpc/post_web_track_comment',{method:'POST',headers:HEAD,body:JSON.stringify({p_track_id:select.value,p_display_name:String(fd.get('name')||'').trim(),p_message:String(fd.get('message')||'').trim(),p_client_token:token()})});if(!r.ok){const x=await r.text();if(x.includes('rate_limited'))throw new Error('rate');throw new Error('post');}form.querySelector('textarea').value='';commentStatus.textContent=msg[lang()].sent;await loadComments();}
+ catch(err){commentStatus.textContent=msg[lang()][err.message==='rate'?'rate':'commentError'];}finally{button.disabled=false;}});
+select.addEventListener('change',()=>{render();loadComments();});
+document.getElementById('lang')?.addEventListener('change',()=>{render();loadComments();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh(true)});
+if('IntersectionObserver'in window)new IntersectionObserver(es=>{visible=es.some(e=>e.isIntersecting);if(visible)refresh(true)},{rootMargin:'200px'}).observe(root);else{visible=true;refresh(true)}
+setInterval(()=>refresh(),REFRESH_MS);render();
 })();
