@@ -67,16 +67,16 @@
     },
     {
       "date": "2026-10-16",
-      "requests": 6,
-      "successes": 6,
+      "requests": 7,
+      "successes": 7,
       "failures": 0,
-      "response_body_bytes": 11634
+      "response_body_bytes": 13573
     }
   ],
   "measurement": "Response body bytes read by the scheduled exporter; excludes HTTP overhead, other clients and other Supabase services. Not a billing total.",
-  "last_attempt_at": "2026-10-16T20:22:57.436Z",
-  "last_success_at": "2026-10-16T20:22:57.436Z",
-  "last_snapshot_at": "2026-10-16T20:20:00.027Z",
+  "last_attempt_at": "2026-10-16T22:56:26.559Z",
+  "last_success_at": "2026-10-16T22:56:26.559Z",
+  "last_snapshot_at": "2026-10-16T22:55:00.085Z",
   "last_response_body_bytes": 1939,
   "last_snapshot_bytes": 1249,
   "projected_30_day_response_body_bytes": 16752960,
