@@ -8,7 +8,19 @@ const REFRESH_MS=300000, STALE_MS=20*60000;
 const CAR_ASSET='https://raw.githubusercontent.com/almaprintes/TopdownCraftrace/dev-first-update/public/assets/cars/lobby/';
 const select=document.getElementById('rankingTrack'),body=document.getElementById('rankingRows'),status=document.getElementById('rankingStatus'),empty=document.getElementById('rankingEmpty'),table=document.getElementById('rankingTable');
 const comments=document.getElementById('trackComments'),form=document.getElementById('commentForm'),commentStatus=document.getElementById('commentStatus');
-const names={'circuito-atlantico':'Circuito Atlántico','karting-canarias':'Karting Canarias','karting-tenerife':'Karting Tenerife','santa-cruz':'Santa Cruz'};
+const TRACKS=Object.freeze([
+{id:'circuito-atlantico',name:'Circuito Atlántico'},
+{id:'circuito-atlantico-inverso',name:'Circuito Atlántico Inverso'},
+{id:'karting-americas',name:'Karting Américas'},
+{id:'karting-americas-inverso',name:'Karting Américas Inverso'},
+{id:'karting-canarias-4096',name:'Karting Canarias'},
+{id:'karting-canarias-4096-inverso',name:'Karting Canarias Inverso'},
+{id:'karting-tenerife-horario',name:'Karting Tenerife'},
+{id:'karting-tenerife',name:'Karting Tenerife Inverso'},
+{id:'santa-cruz',name:'Santa Cruz'},
+{id:'santa-cruz-inverso',name:'Santa Cruz Inverso'},
+{id:'rally-arafo-los-loros',name:'Arafo – Los Loros'}
+]);
 const msg={es:{loading:'Cargando los tiempos…',updated:'Actualizado',stale:'La actualización se está retrasando. Últimos datos:',error:'No se han podido cargar los tiempos.',empty:'Todavía no hay tiempos publicados en este circuito.',noComments:'Aún no hay comentarios. Sé el primero.',sent:'Comentario publicado.',sending:'Publicando…',commentError:'No se pudo publicar. Inténtalo de nuevo.',rate:'Espera un minuto antes de publicar otro comentario.',reserved:'Ese nick está reservado por el creador de TDR.'},en:{loading:'Loading lap times…',updated:'Updated',stale:'Update delayed. Latest data:',error:'Lap times could not be loaded.',empty:'No published times on this track yet.',noComments:'No comments yet. Be the first.',sent:'Comment posted.',sending:'Posting…',commentError:'Could not post. Try again.',rate:'Wait one minute before posting another comment.',reserved:'That nickname is reserved by the TDR creator.'},it:{loading:'Caricamento dei tempi…',updated:'Aggiornato',stale:'Aggiornamento in ritardo. Ultimi dati:',error:'Impossibile caricare i tempi.',empty:'Nessun tempo pubblicato su questo circuito.',noComments:'Ancora nessun commento. Scrivi il primo.',sent:'Commento pubblicato.',sending:'Pubblicazione…',commentError:'Impossibile pubblicare. Riprova.',rate:'Attendi un minuto prima di pubblicare un altro commento.',reserved:'Questo nickname è riservato dal creatore di TDR.'}};
 let snapshot=null,loading=false,visible=false,lastAttempt=0;
 const lang=()=>msg[document.documentElement.lang]?document.documentElement.lang:'es';
@@ -17,7 +29,7 @@ function valid(d){return d?.version===1&&Array.isArray(d.tracks)&&Number.isFinit
 function render(){
  const t=msg[lang()]; if(!snapshot){status.textContent=t.loading;return;}
  const selected=select.value;
- select.replaceChildren(...snapshot.tracks.map(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=names[x.id]||x.id;return o;}));
+ select.replaceChildren(...TRACKS.map(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.name;return o;}));
  if(snapshot.tracks.some(x=>x.id===selected))select.value=selected;
  const entries=snapshot.tracks.find(x=>x.id===select.value)?.entries||[];
  body.replaceChildren(...entries.map(e=>{const r=document.createElement('tr');r.dataset.rank=e.rank;[String(e.rank).padStart(2,'0'),e.nick,fmt(e.best_time_ms)].forEach(v=>{const c=document.createElement('td');c.textContent=v;r.append(c)});return r;}));
