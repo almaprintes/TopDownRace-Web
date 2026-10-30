@@ -9,8 +9,8 @@ export function sanitizeSnapshot(input, now = Date.now()) {
   if (now-generated > 20*60000) throw new Error('Supabase snapshot is older than 20 minutes');
   const seen = new Set();
   const tracks = input.tracks.map((track, trackIndex) => {
-    const label = typeof track?.id === 'string' && /^[a-z0-9-]{1,80}$/.test(track.id) ? track.id : `index ${trackIndex}`;
-    if (typeof track?.id !== 'string' || !/^[a-z0-9-]{1,80}$/.test(track.id)) throw new Error(`Invalid track ID at ${label}`);
+    const label = typeof track?.id === 'string' && track.id.length <= 80 && /^[a-z0-9-]+(?:@[a-z0-9-]+)?$/.test(track.id) ? track.id : `index ${trackIndex}`;
+    if (typeof track?.id !== 'string' || track.id.length > 80 || !/^[a-z0-9-]+(?:@[a-z0-9-]+)?$/.test(track.id)) throw new Error(`Invalid track ID at ${label}`);
     if (seen.has(track.id)) throw new Error(`Duplicate track ID: ${label}`);
     if (!Array.isArray(track.entries)) throw new Error(`Invalid entries array for track: ${label}`);
     if (track.entries.length > 10) throw new Error(`Track ${label} exceeds 10 entries (${track.entries.length})`);
