@@ -165,18 +165,18 @@
     },
     {
       "date": "2026-10-30",
-      "requests": 5,
+      "requests": 6,
       "successes": 2,
-      "failures": 3,
-      "response_body_bytes": 10160
+      "failures": 4,
+      "response_body_bytes": 12192
     }
   ],
   "measurement": "Response body bytes read by the scheduled exporter; excludes HTTP overhead, other clients and other Supabase services. Not a billing total.",
-  "last_attempt_at": "2026-10-30T10:26:45.738Z",
+  "last_attempt_at": "2026-10-30T10:37:49.569Z",
   "last_success_at": "2026-10-30T10:26:45.738Z",
   "last_snapshot_at": "2026-10-30T10:15:00.116Z",
   "last_response_body_bytes": 2032,
   "last_snapshot_bytes": 1453,
   "projected_30_day_response_body_bytes": 17556480,
-  "last_error": null
+  "last_error": "Supabase snapshot is older than 20 minutes"
 }
