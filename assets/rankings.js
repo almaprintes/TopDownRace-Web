@@ -9,7 +9,7 @@ const CAR_ASSET='https://raw.githubusercontent.com/almaprintes/TopdownCraftrace/
 const select=document.getElementById('rankingTrack'),body=document.getElementById('rankingRows'),status=document.getElementById('rankingStatus'),empty=document.getElementById('rankingEmpty'),table=document.getElementById('rankingTable');
 const comments=document.getElementById('trackComments'),form=document.getElementById('commentForm'),commentStatus=document.getElementById('commentStatus');
 const TRACKS=Object.freeze([
-{id:'circuito-atlantico',name:'Circuito Atlántico'},
+{id:'circuito-atlantico@g2-20261023',name:'Circuito Atlántico'},
 {id:'circuito-atlantico-inverso',name:'Circuito Atlántico Inverso'},
 {id:'karting-americas',name:'Karting Américas'},
 {id:'karting-americas-inverso',name:'Karting Américas Inverso'},
@@ -17,9 +17,11 @@ const TRACKS=Object.freeze([
 {id:'karting-canarias-4096-inverso',name:'Karting Canarias Inverso'},
 {id:'karting-tenerife-horario',name:'Karting Tenerife'},
 {id:'karting-tenerife',name:'Karting Tenerife Inverso'},
-{id:'santa-cruz',name:'Santa Cruz'},
+{id:'santa-cruz@g2-20261023',name:'Santa Cruz'},
 {id:'santa-cruz-inverso',name:'Santa Cruz Inverso'},
-{id:'rally-arafo-los-loros',name:'Arafo – Los Loros'}
+{id:'rally-arafo-los-loros',name:'Arafo – Los Loros'},
+{id:'siete-picos',name:'Siete Picos'},
+{id:'siete-picos-inverso',name:'Siete Picos Inverso'}
 ]);
 const msg={es:{loading:'Cargando los tiempos…',updated:'Actualizado',stale:'La actualización se está retrasando. Últimos datos:',error:'No se han podido cargar los tiempos.',empty:'Todavía no hay tiempos publicados en este circuito.',noComments:'Aún no hay comentarios. Sé el primero.',sent:'Comentario publicado.',sending:'Publicando…',commentError:'No se pudo publicar. Inténtalo de nuevo.',rate:'Espera un minuto antes de publicar otro comentario.',reserved:'Ese nick está reservado por el creador de TDR.'},en:{loading:'Loading lap times…',updated:'Updated',stale:'Update delayed. Latest data:',error:'Lap times could not be loaded.',empty:'No published times on this track yet.',noComments:'No comments yet. Be the first.',sent:'Comment posted.',sending:'Posting…',commentError:'Could not post. Try again.',rate:'Wait one minute before posting another comment.',reserved:'That nickname is reserved by the TDR creator.'},it:{loading:'Caricamento dei tempi…',updated:'Aggiornato',stale:'Aggiornamento in ritardo. Ultimi dati:',error:'Impossibile caricare i tempi.',empty:'Nessun tempo pubblicato su questo circuito.',noComments:'Ancora nessun commento. Scrivi il primo.',sent:'Commento pubblicato.',sending:'Pubblicazione…',commentError:'Impossibile pubblicare. Riprova.',rate:'Attendi un minuto prima di pubblicare un altro commento.',reserved:'Questo nickname è riservato dal creatore di TDR.'}};
 let snapshot=null,loading=false,visible=false,lastAttempt=0;
