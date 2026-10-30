@@ -8,9 +8,12 @@ export function sanitizeSnapshot(input, now = Date.now()) {
       !Array.isArray(input.tracks) || input.tracks.length > 100) throw new Error('Invalid snapshot');
   if (now-generated > 20*60000) throw new Error('Supabase snapshot is older than 20 minutes');
   const seen = new Set();
-  const tracks = input.tracks.map(track => {
-    if (typeof track.id !== 'string' || !/^[a-z0-9-]{1,80}$/.test(track.id) || seen.has(track.id) ||
-        !Array.isArray(track.entries) || track.entries.length > 10) throw new Error('Invalid track');
+  const tracks = input.tracks.map((track, trackIndex) => {
+    const label = typeof track?.id === 'string' && /^[a-z0-9-]{1,80}$/.test(track.id) ? track.id : `index ${trackIndex}`;
+    if (typeof track?.id !== 'string' || !/^[a-z0-9-]{1,80}$/.test(track.id)) throw new Error(`Invalid track ID at ${label}`);
+    if (seen.has(track.id)) throw new Error(`Duplicate track ID: ${label}`);
+    if (!Array.isArray(track.entries)) throw new Error(`Invalid entries array for track: ${label}`);
+    if (track.entries.length > 10) throw new Error(`Track ${label} exceeds 10 entries (${track.entries.length})`);
     seen.add(track.id);
     let lastTime = 0, lastRank = 0;
     const entries = track.entries.map((entry,index) => {
@@ -18,7 +21,7 @@ export function sanitizeSnapshot(input, now = Date.now()) {
           !Number.isSafeInteger(entry.best_time_ms) || entry.best_time_ms <= 0 ||
           entry.best_time_ms < lastTime || !Number.isSafeInteger(entry.rank) ||
           entry.rank !== (index && entry.best_time_ms === lastTime ? lastRank : index+1)) {
-        throw new Error('Invalid leaderboard entry');
+        throw new Error(`Invalid leaderboard entry at track ${label}, position ${index+1}`);
       }
       lastTime = entry.best_time_ms; lastRank = entry.rank;
       // Explicit allowlist prevents accidental publication of IDs, ghosts or profile fields.
