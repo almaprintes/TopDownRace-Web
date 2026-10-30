@@ -165,18 +165,18 @@
     },
     {
       "date": "2026-10-30",
-      "requests": 3,
-      "successes": 0,
+      "requests": 4,
+      "successes": 1,
       "failures": 3,
-      "response_body_bytes": 6096
+      "response_body_bytes": 8128
     }
   ],
   "measurement": "Response body bytes read by the scheduled exporter; excludes HTTP overhead, other clients and other Supabase services. Not a billing total.",
-  "last_attempt_at": "2026-10-30T10:19:05.420Z",
-  "last_success_at": "2026-10-27T08:15:10.664Z",
-  "last_snapshot_at": "2026-10-27T08:15:00.101Z",
-  "last_response_body_bytes": 3003,
-  "last_snapshot_bytes": 2007,
-  "projected_30_day_response_body_bytes": 25945920,
-  "last_error": "Invalid track ID at index 1"
+  "last_attempt_at": "2026-10-30T10:22:13.148Z",
+  "last_success_at": "2026-10-30T10:22:13.148Z",
+  "last_snapshot_at": "2026-10-30T10:15:00.116Z",
+  "last_response_body_bytes": 2032,
+  "last_snapshot_bytes": 1453,
+  "projected_30_day_response_body_bytes": 17556480,
+  "last_error": null
 }
