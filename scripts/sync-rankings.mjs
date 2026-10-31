@@ -6,7 +6,8 @@ export function sanitizeSnapshot(input, now = Date.now()) {
   const generated = Date.parse(input?.generated_at);
   if (input?.version !== 1 || !Number.isFinite(generated) || generated > now+60000 ||
       !Array.isArray(input.tracks) || input.tracks.length > 100) throw new Error('Invalid snapshot');
-  if (now-generated > 20*60000) throw new Error('Supabase snapshot is older than 20 minutes');
+  // An unchanged snapshot may legitimately retain its original generation time.
+  // Preserve that timestamp for freshness monitoring; age alone is not an export failure.
   const seen = new Set();
   const tracks = input.tracks.map((track, trackIndex) => {
     const label = typeof track?.id === 'string' && track.id.length <= 80 && /^[a-z0-9-]+(?:@[a-z0-9-]+)?$/.test(track.id) ? track.id : `index ${trackIndex}`;
