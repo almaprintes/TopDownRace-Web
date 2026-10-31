@@ -16,8 +16,9 @@ test('only public fields survive export; ties retain race-control ranks',()=>{
   assert.deepEqual(Object.keys(data.tracks[0].entries[0]),['rank','nick','best_time_ms']);
   assert.equal(data.tracks[0].entries[0].nick,'<img src=x onerror=alert(1)>');
 });
-test('rejects stale data, unordered times and more than ten entries',()=>{
-  assert.throws(()=>sanitizeSnapshot(fixture(),now+21*60000),/older/);
+test('accepts unchanged old snapshots but rejects unordered times and more than ten entries',()=>{
+  const unchanged=sanitizeSnapshot(fixture(),now+21*60000);
+  assert.equal(unchanged.generated_at,fixture().generated_at);
   const unordered=fixture();unordered.tracks[0].entries[2].best_time_ms=1;
   assert.throws(()=>sanitizeSnapshot(unordered,now));
   const tooMany=fixture();tooMany.tracks[0].entries=Array.from({length:11},(_,i)=>({rank:i+1,nick:'x',best_time_ms:i+1}));
